@@ -2,6 +2,7 @@
   "version": "4",
   "specifiers": {
     "npm:@sveltejs/adapter-auto@4": "4.0.0_@sveltejs+kit@2.19.0__@sveltejs+vite-plugin-svelte@5.0.3___svelte@5.22.6____acorn@8.14.1___vite@6.2.1__svelte@5.22.6___acorn@8.14.1__vite@6.2.1_@sveltejs+vite-plugin-svelte@5.0.3__svelte@5.22.6___acorn@8.14.1__vite@6.2.1_svelte@5.22.6__acorn@8.14.1_vite@6.2.1",
+    "npm:@sveltejs/adapter-static@3": "3.0.8_@sveltejs+kit@2.19.0__@sveltejs+vite-plugin-svelte@5.0.3___svelte@5.22.6____acorn@8.14.1___vite@6.2.1__svelte@5.22.6___acorn@8.14.1__vite@6.2.1_@sveltejs+vite-plugin-svelte@5.0.3__svelte@5.22.6___acorn@8.14.1__vite@6.2.1_svelte@5.22.6__acorn@8.14.1_vite@6.2.1",
     "npm:@sveltejs/kit@^2.16.0": "2.19.0_@sveltejs+vite-plugin-svelte@5.0.3__svelte@5.22.6___acorn@8.14.1__vite@6.2.1_svelte@5.22.6__acorn@8.14.1_vite@6.2.1",
     "npm:@sveltejs/vite-plugin-svelte@5": "5.0.3_svelte@5.22.6__acorn@8.14.1_vite@6.2.1",
     "npm:svelte@5": "5.22.6_acorn@8.14.1",
@@ -185,6 +186,12 @@
       "dependencies": [
         "@sveltejs/kit",
         "import-meta-resolve"
+      ]
+    },
+    "@sveltejs/adapter-static@3.0.8_@sveltejs+kit@2.19.0__@sveltejs+vite-plugin-svelte@5.0.3___svelte@5.22.6____acorn@8.14.1___vite@6.2.1__svelte@5.22.6___acorn@8.14.1__vite@6.2.1_@sveltejs+vite-plugin-svelte@5.0.3__svelte@5.22.6___acorn@8.14.1__vite@6.2.1_svelte@5.22.6__acorn@8.14.1_vite@6.2.1": {
+      "integrity": "sha512-YaDrquRpZwfcXbnlDsSrBQNCChVOT9MGuSg+dMAyfsAa1SmiAhrA5jUYUiIMC59G92kIbY/AaQOWcBdq+lh+zg==",
+      "dependencies": [
+        "@sveltejs/kit"
       ]
     },
     "@sveltejs/kit@2.19.0_@sveltejs+vite-plugin-svelte@5.0.3__svelte@5.22.6___acorn@8.14.1__vite@6.2.1_svelte@5.22.6__acorn@8.14.1_vite@6.2.1": {
@@ -438,6 +445,7 @@
     "packageJson": {
       "dependencies": [
         "npm:@sveltejs/adapter-auto@4",
+        "npm:@sveltejs/adapter-static@3",
         "npm:@sveltejs/kit@^2.16.0",
         "npm:@sveltejs/vite-plugin-svelte@5",
         "npm:svelte@5",
