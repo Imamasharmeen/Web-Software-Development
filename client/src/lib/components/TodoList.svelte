@@ -1,12 +1,13 @@
 <script>
-  import TodoItem from "./TodoItem.svelte"; // যোগ করা হয়েছে
-  let { todos, removeTodo } = $props();
+  import TodoItem from "./TodoItem.svelte";
+  import { useTodoState } from "$lib/states/todoState.svelte.js";
+  let todoState = useTodoState();
 </script>
 
 <ul>
-  {#each todos as todo}
+  {#each todoState.todos as todo}
     <li>
-      <TodoItem {todo} {removeTodo} />
+      <TodoItem {todo} />
     </li>
   {/each}
 </ul>

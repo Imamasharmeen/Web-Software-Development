@@ -1,5 +1,14 @@
 <script>
-  let { addTodo } = $props();
+  import { useTodoState } from "$lib/states/todoState.svelte.js";
+  let todoState = useTodoState();
+
+  const addTodo = (e) => {
+    e.preventDefault();
+    const todo = Object.fromEntries(new FormData(e.target));
+    todo.id = crypto.randomUUID();
+    todoState.add(todo);
+    e.target.reset();
+  };
 </script>
 
 <form onsubmit={addTodo}>
