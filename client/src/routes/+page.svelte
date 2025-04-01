@@ -1,5 +1,5 @@
 <script>
-  import Spells from "$lib/components/Spells.svelte";
+  import Jokes from "$lib/components/Jokes.svelte";
 </script>
 
-<Spells />
+<Jokes />
