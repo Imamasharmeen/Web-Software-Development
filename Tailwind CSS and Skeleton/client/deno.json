@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "@tailwindcss/vite": "npm:@tailwindcss/vite@^4.1.8",
+    "tailwindcss": "npm:tailwindcss@^4.1.8"
+  }
+}
