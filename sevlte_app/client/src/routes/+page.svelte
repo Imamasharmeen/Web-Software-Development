@@ -1,2 +1,4 @@
-<h1>Hello</h1>
 
+
+<p>Planning</p>
+<a href="/code">Start coding</a>
