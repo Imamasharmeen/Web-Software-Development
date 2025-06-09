@@ -1,4 +1,6 @@
+<svelte:head>
+  <title>Home</title>
+</svelte:head>
 
-
-<p>Planning</p>
-<a href="/code">Start coding</a>
+<h1>Home</h1>
+<p>Welcome</p>

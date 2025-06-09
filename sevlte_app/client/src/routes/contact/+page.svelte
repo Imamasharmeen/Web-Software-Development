@@ -1,10 +1,6 @@
-<p>You can contact me here.</p>
+<svelte:head>
+  <title>Contact</title>
+</svelte:head>
 
-
-<nav>
-  <ul>
-    <li><a href="/">Home</a></li>
-    <li><a href="/about">About</a></li>
-    <li><a href="/contact">Contact</a></li>
-  </ul>
-</nav>
+<h1>Contact</h1>
+<p>Contact</p>
