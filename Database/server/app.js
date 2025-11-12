@@ -1,105 +1,81 @@
+import { Hono } from "jsr:@hono/hono@4.6.5";
+import { getCookie, setCookie } from "jsr:@hono/hono@4.6.5/cookie";
+import { cors } from "jsr:@hono/hono@4.6.5/cors";
+import { hash, verify } from "jsr:@denorg/scrypt@4.4.4";
+import * as jwt from "jsr:@hono/hono@4.6.5/jwt";
+import postgres from "postgres";
 
-// import { Hono } from "jsr:@hono/hono@4.6.5";
+const sql = postgres(); // Do NOT include any DB credentials
 
-// const app = new Hono();
+const app = new Hono();
 
-// app.get("/courses", (c) => {
-//   return c.json({
-//     courses: [
-//       { id: 1, name: "Web Software Development" },
-//       { id: 2, name: "Device-Agnostic Design" }
-//     ]
-//   });
-// });
+// Constants
+const COOKIE_NAME = "token";
+const JWT_SECRET = "wsd-project-secret";
 
-// app.get("/courses/:id", (c) => {
-//   const id = Number(c.req.param("id"));
-//   return c.json({
-//     course: { id: id, name: "Course Name" }
-//   });
-// });
+// Middleware
+app.use(
+  "/*",
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
-// app.post("/courses", async (c) => {
-//   const { name } = await c.req.json();
-//   return c.json({
-//     course: { id: 3, name: name }
-//   });
-// });
+// 🔧 Helper: Clean input
+const clean = (data) => {
+  data.email = data.email.trim().toLowerCase();
+  data.password = data.password.trim();
+};
 
-// app.get("/courses/:id/topics", (c) => {
-//   return c.json({
-//     topics: [
-//       { id: 1, name: "Topic 1" },
-//       { id: 2, name: "Topic 2" }
-//     ]
-//   });
-// });
+// 🔐 POST /api/auth/register
+app.post("/api/auth/register", async (c) => {
+  const data = await c.req.json();
+  clean(data);
 
-// app.get("/courses/:cId/topics/:tId/posts", (c) => {
-//   return c.json({
-//     posts: [
-//       { id: 1, title: "Post 1" },
-//       { id: 2, title: "Post 2" }
-//     ]
-//   });
-// });
+  const passwordHash = await hash(data.password);
 
-// app.get("/courses/:cId/topics/:tId/posts/:pId", (c) => {
-//   const pId = Number(c.req.param("pId"));
-//   return c.json({
-//     post: { id: pId, title: "Post Title" },
-//     answers: [
-//       { id: 1, content: "Answer 1" },
-//       { id: 2, content: "Answer 2" }
-//     ]
-//   });
-// });
+  try {
+    await sql`
+      INSERT INTO users (email, password_hash)
+      VALUES (${data.email}, ${passwordHash})
+    `;
+    return c.json({ message: "Registration successful." });
+  } catch (e) {
+    return c.json({ message: "Email already registered." });
+  }
+});
 
-// export default app;
+// 🔐 POST /api/auth/login
+app.post("/api/auth/login", async (c) => {
+  const data = await c.req.json();
+  clean(data);
 
+  const users = await sql`
+    SELECT * FROM users WHERE lower(email) = ${data.email}
+  `;
 
-// BOOk_ratting
+  if (users.length === 0) {
+    return c.json({ message: "Incorrect email or password." });
+  }
 
-// import { Hono } from "jsr:@hono/hono@4.6.5";
-// import { cors } from "jsr:@hono/hono@4.6.5/cors";
+  const user = users[0];
+  const valid = await verify(data.password, user.password_hash);
 
-// import * as bookController from "./bookController.js";
-// import * as ratingController from "./ratingController.js";
+  if (!valid) {
+    return c.json({ message: "Incorrect email or password." });
+  }
 
-// const app = new Hono();
-// app.use("/*", cors());
+  const token = await jwt.sign({ email: user.email }, JWT_SECRET);
 
-// app.post("/books", ...bookController.createBook);
-// app.get("/books", bookController.getBooks);
-// app.get("/books/:id", bookController.getBook);
-// app.put("/books/:id", ...bookController.updateBook);
-// app.delete("/books/:id", bookController.deleteBook);
+  setCookie(c, COOKIE_NAME, token, {
+    httpOnly: true,
+    path: "/",
+    sameSite: "Lax",
+    domain: "localhost",
+  });
 
-// app.post("/books/:bookId/ratings", ...ratingController.createRating);
-// app.get("/books/:bookId/ratings", ratingController.getRatings);
-// app.get("/books/:bookId/ratings/:ratingId", ratingController.getRating);
-// app.put("/books/:bookId/ratings/:ratingId", ...ratingController.updateRating);
-// app.delete("/books/:bookId/ratings/:ratingId", ratingController.deleteRating);
+  return c.json({ message: "Welcome!" });
+});
 
-// export default app;
-
-import { Application } from 'https://deno.land/x/oak/mod.ts';
-import { cors } from 'https://deno.land/x/cors/mod.ts';
-import questionController from './questionController.js';
-
-const app = new Application();
-
-// Enable CORS
-app.use(cors({
-  origin: 'http://localhost:5174',
-  methods: 'GET,POST,DELETE',
-  allowedHeaders: ['Content-Type']
-}));
-
-// Routes
-app.get('/courses/:id/questions', questionController.getQuestions);
-app.post('/courses/:id/questions', questionController.addQuestion);
-app.post('/courses/:id/questions/:qId/upvote', questionController.upvoteQuestion);
-app.delete('/courses/:id/questions/:qId', questionController.deleteQuestion);
-
-await app.listen({ port: 8000 });
+export default app;

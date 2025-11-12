@@ -1,0 +1,13 @@
+<script>
+  import { enhance } from '$app/forms';
+</script>
+
+<form method="POST" use:enhance>
+  <label for="email">Email</label>
+  <input id="email" name="email" type="email" required />
+
+  <label for="password">Password</label>
+  <input id="password" name="password" type="password" required />
+
+  <button type="submit">Login</button>
+</form>

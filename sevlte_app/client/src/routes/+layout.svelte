@@ -1,15 +1,12 @@
 <script>
-  let { children } = $props();
+	import "../app.css";
+	import { ToastProvider } from "@skeletonlabs/skeleton-svelte";
 </script>
 
-{@render children()}
-
-<footer>
-  <nav>
-    <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/about">About</a></li>
-      <li><a href="/contact">Contact</a></li>
-    </ul>
-  </nav>
-</footer>
+<ToastProvider>
+	<div class="flex flex-col h-full">
+		<main class="container mx-auto max-w-2xl grow py-8">
+			<slot />
+		</main>
+	</div>
+</ToastProvider>

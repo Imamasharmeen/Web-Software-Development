@@ -1,6 +1,5 @@
-<svelte:head>
-  <title>Home</title>
-</svelte:head>
+<script>
+</script>
 
-<h1>Home</h1>
-<p>Welcome</p>
+<h1>Welcome!</h1>
+<a href="/courses">Courses</a>
