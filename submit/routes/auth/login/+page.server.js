@@ -11,7 +11,6 @@ export const actions = {
       return fail(400, { message: 'Email and password are required.' });
     }
 
-    // Call backend login API
     const response = await fetch(`${PUBLIC_INTERNAL_API_URL}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -19,7 +18,7 @@ export const actions = {
     });
 
     if (!response.ok) {
-      return fail(401, { message: 'Login failed. Please check your credentials.' });
+      return fail(401, { message: 'Login failed.' });
     }
 
     const result = await response.json();
@@ -29,12 +28,11 @@ export const actions = {
         path: '/',
         httpOnly: true,
         sameSite: 'strict',
-        secure: false, // change to true in production
-        maxAge: 60 * 60 * 24 * 7 // 7 days
+        secure: false,
+        maxAge: 60 * 60 * 24 * 7
       });
     }
 
-    // Redirect to home page
     throw redirect(303, '/');
   }
 };
