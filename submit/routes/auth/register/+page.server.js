@@ -1,34 +1,30 @@
-import { redirect } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
+import { PUBLIC_INTERNAL_API_URL } from '$env/static/public';
 
 export const actions = {
-  default: async ({ request, fetch }) => {
-    const data = await request.formData();
-    const email = data.get('email');
-    const password = data.get('password');
+  default: async ({ request }) => {
+    const formData = await request.formData();
+    const email = formData.get('email')?.trim().toLowerCase();
+    const password = formData.get('password')?.trim();
 
-    try {
-      const response = await fetch(`${process.env.PUBLIC_INTERNAL_API_URL}/api/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (response.ok) {
-        throw redirect(303, '/auth/login');
-      } else {
-        return {
-          message: 'Registration failed. Please try again.'
-        };
-      }
-    } catch (error) {
-      if (error.status === 303) {
-        throw error;
-      }
-      return {
-        message: 'An error occurred. Please try again.'
-      };
+    if (!email || !password) {
+      return fail(400, { message: 'Email and password required.' });
     }
+
+    // Send registration request to backend API
+    const res = await fetch(`${PUBLIC_INTERNAL_API_URL}/api/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    // If registration succeeded, redirect to login page
+    if (res.ok) {
+      throw redirect(303, '/auth/login');
+    }
+
+    // Otherwise show message
+    const body = await res.json().catch(() => ({}));
+    return fail(400, { message: body?.message || 'Registration failed.' });
   }
 };

@@ -3,17 +3,26 @@ export async function handle({ event, resolve }) {
 
   if (token) {
     try {
-      const base64Payload = token.split('.')[1];
-      const jsonPayload = Buffer.from(base64Payload, 'base64').toString();
-      const payload = JSON.parse(jsonPayload);
-
-      event.locals.user = { email: payload.email };
-    } catch {
+      // Decode JWT token
+      const [header, payload, signature] = token.split('.');
+      
+      if (payload) {
+        const decodedPayload = JSON.parse(
+          Buffer.from(payload, 'base64').toString('utf-8')
+        );
+        
+        if (decodedPayload.email) {
+          event.locals.user = { email: decodedPayload.email };
+        }
+      }
+    } catch (err) {
+      console.error('Error decoding token:', err);
       event.locals.user = null;
     }
   } else {
     event.locals.user = null;
   }
 
-  return resolve(event);
+  const response = await resolve(event);
+  return response;
 }
